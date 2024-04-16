@@ -13,11 +13,12 @@
             "balluff-scan-carriers": "nodes/balluff-scan-carriers/balluff-scan-carriers.js",
             "balluff-digital-input": "nodes/balluff-digital-input/balluff-digital-input.js",
             "balluff-iolink-cyclic-output": "nodes/balluff-iolink-cyclic-output/balluff-iolink-cyclic-output.js",
+            "balluff-iolink-acyclic-output": "nodes/balluff-iolink-acyclic-output/balluff-iolink-acyclic-output.js",
             "epc-gs1": "nodes/epc-gs1/epc-gs1.js"
         }
     },
     "dependencies": {
-        "@autexis/balluff-rfid": "0.0.2"
+        "@autexis/balluff-rfid": "git+https://github.com/skadisch/balluff-rfid.git#c4401a4b27e42c6c23f63e497fd55166bb54793b"
     },
     "main": "index.js",
     "repository": "https://github.com/Autexis-IT/node-red-contrib-balluff-rfid.git",
