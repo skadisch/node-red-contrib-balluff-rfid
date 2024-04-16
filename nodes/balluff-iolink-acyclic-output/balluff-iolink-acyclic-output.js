@@ -10,7 +10,7 @@ const findErrorRootCause = ({ error }) => {
 };
 
 module.exports = function (RED) {
-    function BalluffIoLinkCyclicOutput(config) {
+    function BalluffIoLinkAcyclicOutput(config) {
         RED.nodes.createNode(this, config);
         const node = this;
 
@@ -20,7 +20,7 @@ module.exports = function (RED) {
         let lastError = undefined;
         let closed = false;
 
-        let nextProcessData = undefined;
+        let sendQueue = [];
         let debounceTimeoutHandle = undefined;
 
         let writePending = false;
@@ -88,8 +88,6 @@ module.exports = function (RED) {
             return;
         }
 
-        const ioLinkConfig = connectionConfigNode.ioLinkConfig;
-
         const registration = connectionConfigNode.registerBalluffNode({
 
             onStateChange: ({ connecting: newConnecting, connection, ioLinkHandle: newIoLinkHandle, error }) => {
@@ -114,7 +112,7 @@ module.exports = function (RED) {
             },
         });
 
-        const maybeWriteNextProcessData = () => {
+        const maybeWriteNextRequest = () => {
             if (closed) {
                 return;
             }
@@ -127,7 +125,7 @@ module.exports = function (RED) {
                 return;
             }
 
-            if (nextProcessData === undefined) {
+            if (sendQueue.length === 0) {
                 return;
             }
 
@@ -139,13 +137,16 @@ module.exports = function (RED) {
             lastWriteAt = performance.now();
 
             lastError = undefined;
-            const dataToWrite = nextProcessData;
+
+            const nextRequest = sendQueue[0];
+            sendQueue = sendQueue.slice(1);
 
             // make sure synchronous errors are also caught
             Promise.resolve().then(() => {
-                return ioLinkHandle.writeCyclicProcessData({
-                    offset: 0,
-                    data: dataToWrite
+                return ioLinkHandle.writeAcyclicProcessData({
+                    index: nextRequest.index,
+                    subIndex: nextRequest.subIndex,
+                    data: nextRequest.payload
                 });
             }).then(({ error }) => {
                 return {
@@ -167,7 +168,7 @@ module.exports = function (RED) {
                     lastError = error;
 
                     // log error to console with full cause chain
-                    console.error(`writing of io link data failed`, error);
+                    console.error(`writing of acyclic io link data failed`, error);
 
                     // as Node RED does not show the full cause chain
                     // we only show the root cause
@@ -177,7 +178,7 @@ module.exports = function (RED) {
 
                 debounceTimeoutHandle = setTimeout(() => {
                     debounceTimeoutHandle = undefined;
-                    maybeWriteNextProcessData();
+                    maybeWriteNextRequest();
                 }, debounceTimeMs);
 
                 updateStatusIcon();
@@ -187,8 +188,43 @@ module.exports = function (RED) {
             updateStatusIcon();
         };
 
-        node.on("input", (inputMessage) => {
+        const queueRequest = ({ inputMessage }) => {
+            let queued = false;
 
+            // first, try to find already queued requests and update them
+            sendQueue = sendQueue.map((req) => {
+                if (req.index == inputMessage.index && req.subIndex === inputMessage.subIndex) {
+                    queued = true;
+                    return inputMessage;
+                } else {
+                    return req;
+                }
+            });
+
+            // if no request of index / subIndex tuple was found, add the new request
+            if (!queued) {
+                sendQueue = [
+                    ...sendQueue,
+                    inputMessage
+                ];
+            }
+        };
+
+        const validateRequest = ({ inputMessage }) => {
+            if (isNaN(inputMessage.index)) {
+                throw Error("index must be a number");
+            }
+
+            if (isNaN(inputMessage.subIndex)) {
+                throw Error("subIndex must be a number");
+            }
+
+            if (inputMessage.payload === undefined) {
+                throw Error("payload must be defined");
+            }
+        };
+
+        const checkIfConnected = () => {
             if (ioLinkHandle === undefined) {
 
                 if (!notConnectedMessageShown) {
@@ -200,24 +236,20 @@ module.exports = function (RED) {
             }
 
             notConnectedMessageShown = false;
+        };
 
-            const payload = inputMessage.payload;
-
-            if (payload.length !== ioLinkConfig.outputLength) {
-                node.error("invalid payload length");
-                return;
-            }
-
-            nextProcessData = payload;
-            maybeWriteNextProcessData();
+        node.on("input", (inputMessage) => {
+            validateRequest({ inputMessage });
+            checkIfConnected();            
+            queueRequest({ inputMessage });
+            maybeWriteNextRequest();
         });
 
         node.on("close", () => {
             closed = true;
-            nextProcessData = undefined;
             registration.close();
         });
     }
 
-    RED.nodes.registerType("balluff-iolink-cyclic-output", BalluffIoLinkCyclicOutput);
+    RED.nodes.registerType("balluff-iolink-acyclic-output", BalluffIoLinkAcyclicOutput);
 }
