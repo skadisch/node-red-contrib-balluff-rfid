@@ -54,16 +54,17 @@ module.exports = function (RED) {
         node.ioLinkConfig = ioLinkConfig;
 
         let conn = undefined;
+        let ioLinkHandle = undefined;
         let connecting = false;
         let lastError = undefined;
         let closed = false;
         let reconnectTimeoutHandle = undefined;
         let registeredBalluffNodes = [];
 
-        const emitStateChange = ({ connecting, connection, error }) => {
+        const emitStateChange = ({ connecting, connection, ioLinkHandle, error }) => {
             registeredBalluffNodes.forEach((node) => {
                 try {
-                    node.onStateChange({ connecting, connection, error });
+                    node.onStateChange({ connecting, connection, ioLinkHandle, error });
                 } catch (ex) {
                     node.error(ex);
                 }
@@ -71,7 +72,7 @@ module.exports = function (RED) {
         };
 
         const maybeEmitStateChange = () => {
-            emitStateChange({ connecting, connection: conn, error: lastError });
+            emitStateChange({ connecting, connection: conn, ioLinkHandle, error: lastError });
         };
 
         const maybeConnect = () => {
@@ -101,6 +102,22 @@ module.exports = function (RED) {
                     }
 
                     conn = newConn;
+
+                    try {
+                        ioLinkHandle = conn.claimIoLink({
+                            cycleTimeBase: 0,
+                            cycleTime: 0,
+                            safeState: 0,
+                            validationMode: 0,
+                            vendorId: ioLinkConfig.vendorId,
+                            deviceId: ioLinkConfig.deviceId,
+                            outputLength: ioLinkConfig.outputLength,
+                            inputLength: ioLinkConfig.inputLength,
+                        });
+                    } catch (error) {
+                        node.error(error);
+                    }
+                    
                     lastError = undefined;
 
                     maybeEmitStateChange();
@@ -121,6 +138,7 @@ module.exports = function (RED) {
                     }
 
                     conn = undefined;
+                    ioLinkHandle = undefined;
                     lastError = error;
 
                     maybeEmitStateChange();
@@ -159,6 +177,7 @@ module.exports = function (RED) {
             if (conn !== undefined) {
                 conn.close();
                 conn = undefined;
+                ioLinkHandle = undefined;
             }
 
             if (reconnectTimeoutHandle !== undefined) {
