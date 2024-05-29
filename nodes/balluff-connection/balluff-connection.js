@@ -34,7 +34,7 @@ module.exports = function (RED) {
         const ioLinkConfig = {
             vendorId: ioLinkVendorId,
             deviceId: ioLinkDeviceId,
-            outputLength: 2,
+            outputLength: 3,
             inputLength: 1
         };
 
