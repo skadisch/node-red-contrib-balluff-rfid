@@ -31,11 +31,25 @@ module.exports = function (RED) {
             return;
         }
 
+        const ioLinkOutputLength = parseInt(config.iolinkoutputlength, 10);
+        if (isNaN(ioLinkOutputLength)) {
+            node.error("invalid output length");
+            return;
+        }
+
+        const ioLinkInputLength = parseInt(config.iolinkinputlength, 10);
+        if (isNaN(ioLinkInputLength)) {
+            node.error("invalid input length");
+            return;
+        }
+
+        console.log({ ioLinkInputLength, ioLinkOutputLength });
+
         const ioLinkConfig = {
             vendorId: ioLinkVendorId,
             deviceId: ioLinkDeviceId,
-            outputLength: 3,
-            inputLength: 1
+            outputLength: ioLinkOutputLength,
+            inputLength: ioLinkInputLength,
         };
 
         node.ioLinkConfig = ioLinkConfig;
