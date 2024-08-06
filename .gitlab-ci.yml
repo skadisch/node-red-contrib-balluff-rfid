@@ -1,0 +1,74 @@
+# .gitlab-ci.yml
+
+stages:
+  - setup
+  - test
+  - deploy
+
+install_dependencies:
+  stage: setup
+  image: node:18-bullseye
+  tags:
+    - amd
+  script:
+    - yarn install
+  cache:
+    key: node_modules
+    untracked: true
+    paths:
+      - node_modules/
+    policy: pull-push
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE =~ /^(web)|(schedule)|(merge_request_event)$/
+  interruptible: true
+
+semgrep-sast:
+  stage: test
+  tags:
+    - amd
+  artifacts:
+    when: always
+    paths:
+      - gl-sast-report.json
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE =~ /^(web)|(schedule)|(merge_request_event)$/
+
+secret_detection:
+  stage: test
+  tags:
+    - amd
+  artifacts:
+    when: always
+    paths:
+      - gl-secret-detection-report.json
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE =~ /^(web)|(schedule)|(merge_request_event)$/
+
+nodejs-scan-sast:
+  stage: test
+  tags:
+    - amd
+  artifacts:
+    when: always
+    paths:
+      - gl-sast-report.json
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE =~ /^(web)|(schedule)|(merge_request_event)$/
+
+publish:
+  stage: deploy
+  resource_group: package_deployment
+  trigger:
+    include:
+      - local: .gitlab-publish-ci.yml
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_TAG || $CI_PIPELINE_SOURCE =~ /^(web)|(schedule)$/
+
+variables:
+  # exclude flawfinder (c/c++ analyzer) from sast (security analyzer) because it gets triggered by whatever reason
+  SAST_EXCLUDED_ANALYZERS: "flawfinder"
+
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
