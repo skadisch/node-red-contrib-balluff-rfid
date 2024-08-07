@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
+## [0.0.2] - 2024-XX-XX
+### Requirements
+### Configuration
+### Added
+### Changed
+- ci rule for package publish
+### Fixed
+### Dependencies
+#### Added
+#### Updated
+#### Removed
+
 ## [0.0.1] - 2024-04-08
 ### Requirements
 ### Configuration
@@ -25,4 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
-[Unreleased]: https://github.com/Autexis-IT/node-red-contrib-balluff-smartlight/compare/0.0.1...development
+[Unreleased]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.2...development
+[0.0.2]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.1...0.0.2
