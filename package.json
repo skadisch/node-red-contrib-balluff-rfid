@@ -1,5 +1,5 @@
 {
-    "version": "0.0.2",
+    "version": "0.0.3",
     "name": "@autexis/node-red-contrib-balluff-rfid",
     "keywords": [ "node-red" ],
     "engines": {
@@ -17,7 +17,7 @@
         }
     },
     "dependencies": {
-        "@autexis/balluff-rfid": "0.0.3"
+        "@autexis/balluff-rfid": "0.0.4"
     },
     "main": "index.js",
     "repository": "https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid",
