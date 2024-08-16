@@ -13,7 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
-## [0.0.2] - 2024-XX-XX
+## [0.0.3] - 2024-08-16
+### Requirements
+### Configuration
+### Added
+### Changed
+- added ci job for publishing the package on npmjs
+### Fixed
+### Dependencies
+#### Added
+#### Updated
+- "@autexis/balluff-rfid": "0.0.3" -> "0.0.4"
+#### Removed
+
+## [0.0.2] - 2024-08-09
 ### Requirements
 ### Configuration
 ### Added
@@ -23,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 #### Added
 #### Updated
+- "@autexis/balluff-rfid": "0.0.2" -> "0.0.3"
 #### Removed
 
 ## [0.0.1] - 2024-04-08
@@ -37,5 +51,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
-[Unreleased]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.2...development
+[Unreleased]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.3...development
+[0.0.3]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.2...0.0.3
 [0.0.2]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.1...0.0.2
