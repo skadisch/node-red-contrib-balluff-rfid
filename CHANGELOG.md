@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
+## [0.1.0] - 2024-08-22
+### Requirements
+### Configuration
+### Added
+### Changed
+### Fixed
+### Dependencies
+#### Added
+#### Updated
+- "@autexis/balluff-rfid": "0.0.4" -> "0.1.0"
+  - support writing of acyclic IO link data
+#### Removed
+
 ## [0.0.3] - 2024-08-16
 ### Requirements
 ### Configuration
@@ -51,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Updated
 #### Removed
 
-[Unreleased]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.3...development
+[Unreleased]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.1.0...development
+[0.1.0]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.3...0.1.0
 [0.0.3]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.2...0.0.3
 [0.0.2]: https://gitlab.com/autexis/oss/packages/node-red-contrib-balluff-rfid/compare/0.0.1...0.0.2
