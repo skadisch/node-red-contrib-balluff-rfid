@@ -8,6 +8,7 @@ module.exports = function (RED) {
         const node = this;
 
         node.host = config.host;
+        const disabled = config.host === "disabled";
 
         const port = parseInt(config.port, 10);
         if (isNaN(port)) {
@@ -75,6 +76,10 @@ module.exports = function (RED) {
 
         const maybeConnect = () => {
             if (closed) {
+                return;
+            }
+
+            if (disabled) {
                 return;
             }
 
