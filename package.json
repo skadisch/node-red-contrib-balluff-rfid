@@ -12,6 +12,7 @@
             "balluff-detect-carriers": "nodes/balluff-detect-carriers/balluff-detect-carriers.js",
             "balluff-scan-carriers": "nodes/balluff-scan-carriers/balluff-scan-carriers.js",
             "balluff-digital-input": "nodes/balluff-digital-input/balluff-digital-input.js",
+            "balluff-iolink-acyclic-output": "nodes/balluff-iolink-acyclic-output/balluff-iolink-acyclic-output.js",
             "balluff-iolink-cyclic-output": "nodes/balluff-iolink-cyclic-output/balluff-iolink-cyclic-output.js",
             "epc-gs1": "nodes/epc-gs1/epc-gs1.js"
         }
